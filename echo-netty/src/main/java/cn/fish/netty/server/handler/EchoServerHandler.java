@@ -39,10 +39,8 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
             //在进行类型转换过程中还可以进行编码指定（NIO封装）
             String inputData = byteBuf.toString(CharsetUtil.UTF_8);
             //返回响应内容
+            System.err.println("{服务器}"+inputData);
             String echoData = "ECHO:"+inputData;
-            if ("exit".equalsIgnoreCase(inputData)) {
-                echoData = "quit!!!";
-            }
             byte[] bytes = echoData.getBytes();
             //获取缓存
             ByteBuf byteBuf1 = Unpooled.buffer(bytes.length);

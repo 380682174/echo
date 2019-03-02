@@ -15,23 +15,33 @@ import io.netty.util.ReferenceCountUtil;
  */
 public class EchoClientHandler extends ChannelHandlerAdapter {
 
+    /***
+     * 消息重发次数
+     */
+    private static final int REPEAT = 500;
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+
+        for (int x = 0; x < REPEAT; x++) {
+            String hello = "【"+x+"】hello word!".getBytes();
+            byte[] datas = hello.getBytes();
+            ByteBuf byteBuf = Unpooled.buffer(datas.length);
+            byteBuf.writeBytes(datas);
+            ctx.writeAndFlush(byteBuf);
+        }
+
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
         try {
+            // 接收返回数据内容
             ByteBuf byteBuf = (ByteBuf) msg;
-            String outputData = byteBuf.toString(CharsetUtil.UTF_8);
-            if ("quit!!!".equalsIgnoreCase(outputData)) {
-                System.out.println("结束本次会话之旅！！！");
-                ctx.close();
-            } else {
-                System.out.println("输出服务端返回的响应内容："+outputData);
-                String inputData = InputUtil.getString("请输入内容：");
-                byte[] datas = inputData.getBytes();
-                ByteBuf byteBuf1 = Unpooled.buffer(datas.length);
-                byteBuf1.writeBytes(datas);
-                ctx.writeAndFlush(byteBuf1);
-            }
+            String data = byteBuf.toString(CharsetUtil.UTF_8);
+            // 输出服务器端的响应内容
+            System.out.println(data);
         } finally {
             ReferenceCountUtil.release(msg);
         }

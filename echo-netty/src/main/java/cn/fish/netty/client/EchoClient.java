@@ -34,13 +34,6 @@ public class EchoClient {
                         }
                     });
             ChannelFuture future = bootstrap.connect(HostInfo.HOST_NAME,HostInfo.PORT).sync();
-            future.addListener(new GenericFutureListener<Future<? super Void>>() {
-                public void operationComplete(Future<? super Void> future) throws Exception {
-                    if (future.isSuccess()) {
-                        System.out.println("服务器连接已经完成，可以确保进行消息的准确传输！");
-                    }
-                }
-            });
             future.channel().closeFuture().sync();
         } finally {
             eventLoopGroup.shutdownGracefully();
