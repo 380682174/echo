@@ -1,5 +1,6 @@
 package cn.fish.netty.client.handler;
 
+import cn.fish.info.HostInfo;
 import cn.fish.info.InputUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -24,7 +25,7 @@ public class EchoClientHandler extends ChannelHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
         for (int x = 0; x < REPEAT; x++) {
-            String hello = "【"+x+"】hello word!".getBytes()+System.getProperty("line.separator");
+            String hello = "【"+x+"】hello word!".getBytes()+HostInfo.SEPARATOR;
             ctx.writeAndFlush(hello);
         }
 
