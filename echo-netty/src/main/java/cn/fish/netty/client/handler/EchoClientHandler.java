@@ -2,6 +2,7 @@ package cn.fish.netty.client.handler;
 
 import cn.fish.info.HostInfo;
 import cn.fish.info.InputUtil;
+import cn.fish.vo.Member;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerAdapter;
@@ -16,18 +17,16 @@ import io.netty.util.ReferenceCountUtil;
  */
 public class EchoClientHandler extends ChannelHandlerAdapter {
 
-    /***
-     * 消息重发次数
-     */
-    private static final int REPEAT = 500;
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
-        for (int x = 0; x < REPEAT; x++) {
-            String hello = "【"+x+"】hello word!".getBytes()+HostInfo.SEPARATOR;
-            ctx.writeAndFlush(hello);
-        }
+        Member member = new Member();
+        member.setMid("xiaoli");
+        member.setName("小李老师");
+        member.setAge(16);
+        member.setSalary(1.1);
+        // 直接进行对象实例发送
+        ctx.writeAndFlush(member);
 
     }
 
@@ -36,7 +35,7 @@ public class EchoClientHandler extends ChannelHandlerAdapter {
 
         try {
             // 接收返回数据内容
-            String data = msg.toString();
+            Member data = (Member) msg;
             // 输出服务器端的响应内容
             System.out.println(data);
         } finally {

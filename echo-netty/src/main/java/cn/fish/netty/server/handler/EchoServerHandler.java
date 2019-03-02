@@ -1,6 +1,7 @@
 package cn.fish.netty.server.handler;
 
 import cn.fish.info.HostInfo;
+import cn.fish.vo.Member;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerAdapter;
@@ -33,10 +34,9 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
         try {
-            String inputData = msg.toString();
-            System.err.println("{服务器}"+inputData);
-            String echoData = "ECHO:"+inputData+HostInfo.SEPARATOR;
-            ctx.writeAndFlush(echoData);
+            Member member = (Member) msg;
+            System.err.println(member);
+            ctx.writeAndFlush(member);
         } finally {
             //释放缓存
             ReferenceCountUtil.release(msg);
