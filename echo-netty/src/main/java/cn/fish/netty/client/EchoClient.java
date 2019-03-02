@@ -10,7 +10,11 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.FixedLengthFrameDecoder;
 import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
+import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -31,7 +35,10 @@ public class EchoClient {
                     .option(ChannelOption.TCP_NODELAY,true)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
+                            socketChannel.pipeline().addLast(new FixedLengthFrameDecoder(100));
                             socketChannel.pipeline().addLast(new LineBasedFrameDecoder(1024));
+                            socketChannel.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
+                            socketChannel.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
                             socketChannel.pipeline().addLast(new EchoClientHandler());
                         }
                     });

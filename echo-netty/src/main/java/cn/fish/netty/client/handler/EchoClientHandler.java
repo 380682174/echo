@@ -25,10 +25,7 @@ public class EchoClientHandler extends ChannelHandlerAdapter {
 
         for (int x = 0; x < REPEAT; x++) {
             String hello = "【"+x+"】hello word!".getBytes()+System.getProperty("line.separator");
-            byte[] datas = hello.getBytes();
-            ByteBuf byteBuf = Unpooled.buffer(datas.length);
-            byteBuf.writeBytes(datas);
-            ctx.writeAndFlush(byteBuf);
+            ctx.writeAndFlush(hello);
         }
 
     }
@@ -38,8 +35,7 @@ public class EchoClientHandler extends ChannelHandlerAdapter {
 
         try {
             // 接收返回数据内容
-            ByteBuf byteBuf = (ByteBuf) msg;
-            String data = byteBuf.toString(CharsetUtil.UTF_8);
+            String data = msg.toString();
             // 输出服务器端的响应内容
             System.out.println(data);
         } finally {

@@ -32,22 +32,10 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
         try {
-            //此方法将对客户端发送过来的数据进行读取
-            //由于客户端发送过来的数据未定义具体类型，故而统一按照Object接收
-            // 默认情况下的类型就是ByteBuf类型
-            ByteBuf byteBuf = (ByteBuf) msg;
-            //在进行类型转换过程中还可以进行编码指定（NIO封装）
-            String inputData = byteBuf.toString(CharsetUtil.UTF_8);
-            //返回响应内容
+            String inputData = msg.toString();
             System.err.println("{服务器}"+inputData);
             String echoData = "ECHO:"+inputData+System.getProperty("line.separator");
-            byte[] bytes = echoData.getBytes();
-            //获取缓存
-            ByteBuf byteBuf1 = Unpooled.buffer(bytes.length);
-            //将返回内容写入缓存
-            byteBuf1.writeBytes(bytes);
-            //强制刷新返回缓存中的所有内容
-            ctx.writeAndFlush(byteBuf1);
+            ctx.writeAndFlush(echoData);
         } finally {
             //释放缓存
             ReferenceCountUtil.release(msg);
