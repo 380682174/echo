@@ -27,3 +27,4 @@ Netty 编程
 
 7、Netty 已经历各大 RPC 框架（如Dubbo），消息中间件，分布式通信中间件线上的广泛验证，健壮性无比强大。
 
+Netty可以实现HTTP处理机制，但是Tomcat本身也是基于NIO的实现。
