@@ -12,6 +12,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
 
 /**
  * @Description:
@@ -37,6 +38,7 @@ public class EchoServer {
             //3、接收到消息后需进行处理，于是定义子处理器类
             serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
+                    socketChannel.pipeline().addLast(new LineBasedFrameDecoder(1024));
                     socketChannel.pipeline().addLast(new EchoServerHandler());
                 }
             });

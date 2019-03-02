@@ -24,7 +24,7 @@ public class EchoClientHandler extends ChannelHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
         for (int x = 0; x < REPEAT; x++) {
-            String hello = "【"+x+"】hello word!".getBytes();
+            String hello = "【"+x+"】hello word!".getBytes()+System.getProperty("line.separator");
             byte[] datas = hello.getBytes();
             ByteBuf byteBuf = Unpooled.buffer(datas.length);
             byteBuf.writeBytes(datas);

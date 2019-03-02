@@ -40,7 +40,7 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
             String inputData = byteBuf.toString(CharsetUtil.UTF_8);
             //返回响应内容
             System.err.println("{服务器}"+inputData);
-            String echoData = "ECHO:"+inputData;
+            String echoData = "ECHO:"+inputData+System.getProperty("line.separator");
             byte[] bytes = echoData.getBytes();
             //获取缓存
             ByteBuf byteBuf1 = Unpooled.buffer(bytes.length);
