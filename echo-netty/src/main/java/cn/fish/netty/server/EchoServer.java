@@ -1,6 +1,8 @@
 package cn.fish.netty.server;
 
 import cn.fish.info.HostInfo;
+import cn.fish.netty.serious.MessagePackDecoder;
+import cn.fish.netty.serious.MessagePackEncoder;
 import cn.fish.netty.server.handler.EchoServerHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
@@ -14,9 +16,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.FixedLengthFrameDecoder;
-import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.*;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
@@ -48,8 +48,10 @@ public class EchoServer {
             //3、接收到消息后需进行处理，于是定义子处理器类
             serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
-                    socketChannel.pipeline().addLast(new ObjectDecoder(ClassResolvers.cacheDisabled((this.getClass().getClassLoader())))) ;
-                    socketChannel.pipeline().addLast(new ObjectEncoder()) ;
+                    socketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(65536,0,4,0,4));
+                    socketChannel.pipeline().addLast(new MessagePackDecoder());
+                    socketChannel.pipeline().addLast(new LengthFieldPrepender(4));
+                    socketChannel.pipeline().addLast(new MessagePackEncoder());
                     socketChannel.pipeline().addLast(new EchoServerHandler());
                 }
             });
