@@ -5,11 +5,8 @@ package cn.fish.vo;
  * @Author devin.jiang
  * @CreateDate 2019/3/2 17:29
  */
-import org.msgpack.annotation.Message;
-
 import java.io.Serializable;
 
-@Message
 public class Member implements Serializable {
     private String mid ;
     private String name ;
