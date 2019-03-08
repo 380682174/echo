@@ -2,7 +2,8 @@ package cn.fish.netty.client;
 
 import cn.fish.info.HostInfo;
 import cn.fish.netty.client.handler.EchoClientHandler;
-import cn.fish.netty.serious.MarshallingCodeFactory;
+import cn.fish.netty.serious.JSONDecoder;
+import cn.fish.netty.serious.JSONEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -11,6 +12,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 
 /**
  * @Description:
@@ -29,8 +32,10 @@ public class EchoClient {
                     .option(ChannelOption.TCP_NODELAY,true)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(MarshallingCodeFactory.buildMarshallingEncoder()) ;
-                            socketChannel.pipeline().addLast(MarshallingCodeFactory.buildMarshallingDecoder()) ;
+                            socketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(65536, 0, 4, 0, 4));
+                            socketChannel.pipeline().addLast(new JSONDecoder());
+                            socketChannel.pipeline().addLast(new LengthFieldPrepender(4));
+                            socketChannel.pipeline().addLast(new JSONEncoder());
                             socketChannel.pipeline().addLast(new EchoClientHandler());
                         }
                     });

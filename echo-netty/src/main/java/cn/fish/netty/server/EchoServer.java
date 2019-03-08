@@ -1,7 +1,8 @@
 package cn.fish.netty.server;
 
 import cn.fish.info.HostInfo;
-import cn.fish.netty.serious.MarshallingCodeFactory;
+import cn.fish.netty.serious.JSONDecoder;
+import cn.fish.netty.serious.JSONEncoder;
 import cn.fish.netty.server.handler.EchoServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -11,6 +12,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 
 /**
  * @Description:
@@ -36,8 +39,10 @@ public class EchoServer {
             //3、接收到消息后需进行处理，于是定义子处理器类
             serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
-                    socketChannel.pipeline().addLast(MarshallingCodeFactory.buildMarshallingEncoder()) ;
-                    socketChannel.pipeline().addLast(MarshallingCodeFactory.buildMarshallingDecoder()) ;
+                    socketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(65536, 0, 4, 0, 4));
+                    socketChannel.pipeline().addLast(new JSONDecoder());
+                    socketChannel.pipeline().addLast(new LengthFieldPrepender(4));
+                    socketChannel.pipeline().addLast(new JSONEncoder());
                     socketChannel.pipeline().addLast(new EchoServerHandler());
                 }
             });
