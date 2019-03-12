@@ -13,6 +13,9 @@
         <module>echo-base</module>
         <module>echo-netty</module>
         <module>echo-http</module>
+        <module>rpc-provider</module>
+        <module>rpc-consumer</module>
+        <module>rpc-common</module>
     </modules>
 
     <dependencies>
